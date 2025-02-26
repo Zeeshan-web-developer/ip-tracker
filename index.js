@@ -1,16 +1,26 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-// Route to get client IP
+// Trust proxies (e.g., Nginx, Heroku, AWS ELB)
+app.set('trust proxy', true);
+
+app.get("/", () => {
+    res.json({
+        message: 'app running'
+    });
+})
+
 app.get('/ip', (req, res) => {
-  const clientIP = req.ip; // Get IP from request object
-  res.send({ ip: clientIP });
+  // Get IP from proxy headers or direct connection
+  const ip = req.ip;
+  res.json({
+    ip: ip,
+    headers: req.headers['x-forwarded-for'],
+    message: 'Trust proxy enabled'
+  });
 });
 
-// Handle proxy scenarios (if behind Nginx/load balancer)
-// app.set('trust proxy', true); // Uncomment this if using a proxy
-
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
