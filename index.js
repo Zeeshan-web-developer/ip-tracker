@@ -5,7 +5,7 @@ const port = process.env.PORT || 3000;
 // Trust proxies (e.g., Nginx, Heroku, AWS ELB)
 app.set('trust proxy', true);
 
-app.get("/", () => {
+app.get("/", (req,res) => {
     res.json({
         message: 'app running'
     });
